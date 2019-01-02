@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block page_content %}
+{% import "_macros.html" as macros %}
+<div class="panel panel-default"  >
+        <div class="userProfileSection1">
+            <img src="{{user.image_url }}" >
+        </div>
+        <div class="userProfileSection2">
+
+            <div id="userName" >
+                <h3 style="display:inline">{{ user.username }}</h3>
+                
+                {% if user==current_user and current_user.is_administrator()==False %}
+
+                <a class="btn btn-default btn-sm" href='{{url_for("main.edit_user")}}' style="margin-bottom: 10px;margin-left: 10px;"><span class="glyphicon glyphicon-pencil"></span>
+                    Edit</a>
+                
+                {% endif %}
+                {% if current_user.is_administrator() %}
+                <a class="btn btn-danger btn-sm" style="margin-bottom: 10px;margin-left: 10px;" href="{{ url_for('main.edit_profile_admin', id=user.id) }}">Edit Profile [Admin]</a>
+                {% endif %}
+
+                {% if current_user.can(Permission.FOLLOW) and user != current_user %}
+                    {% if not current_user.is_following(user) %}
+                    <a href="{{ url_for('main.follow', username=user.username) }}" class="btn follow">Follow</a>
+                    {% else %}
+                    <a href="{{ url_for('main.unfollow', username=user.username) }}" class="btn unfollow">Following</a>
+                    {% endif %}
+                {% endif %}
+            
+            </div>
+
+            <div id="userInfoOthers" >
+                {% if user.name or user.location %}
+                    <p>
+                        {% if user.name %}{{ user.name }}{% endif %}
+                        {% if user.location %}
+                            From <a href="http://maps.google.com/?q={{ user.location }}">{{ user.location }}</a>
+                        {% endif %}
+                    </p>
+                {% endif %}
+                {% if current_user.is_administrator() %}
+                    <p><a href="mailto:{{ user.email }}">{{ user.email }}</a></p>
+                {% endif %}
+                {% if user.about_me %}<p>{{ user.about_me }}</p>{% endif %}
+                <p>
+                    Member since {{ moment(user.member_since).format('L') }}.
+                    Last seen {{ moment(user.last_seen).fromNow() }}.
+                </p>    
+            </div>
+            <div class="socials tex-center"> <a href="" class="btn btn-circle btn-primary ">
+                    <i class="fa fa-facebook"></i></a> <a href="" class="btn btn-circle btn-danger ">
+                    <i class="fa fa-google-plus"></i></a> <a href="" class="btn btn-circle btn-info ">
+                    <i class="fa fa-twitter"></i></a> <a href="" class="btn btn-circle btn-warning ">
+                    <i class="fa fa-envelope"></i></a>
+            </div>
+        </div>
+       
+        <div class="userProfileSection3">
+
+                <ul class="nav nav-pills pull-left countlist" role="tablist">
+                    <li role="presentation">
+                    <h3><a href="{{ url_for('main.followers', username=user.username) }}">{{ user.followers.count()-1 }}</a><br>
+                        <small>Follower</small> </h3>
+                    </li>
+                    <li role="presentation">
+                    <h3><a href="{{ url_for('main.followed_by', username=user.username) }}">{{ user.followed.count()-1 }}</a><br>
+                        <small>Following</small> </h3>
+                    </li>
+                    
+                </ul>
+        </div>
+        <div class="clearfix" style="clear:both"></div>
+
+</div>
+
+<div class="post-tabs">
+    <ul class="nav nav-tabs">
+            <li class="active"><a href="">Latest</a></li>
+
+    </ul>
+    {% include '_posts.html' %}
+</div>
+
+{% if pagination %}
+    <div class="pagination" >
+        {{ macros.pagination_widget(pagination, 'main.user',username=user.username) }}
+    </div>
+{% endif %}
+    
+{% endblock %}

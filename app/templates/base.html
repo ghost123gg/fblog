@@ -1,0 +1,121 @@
+{% extends "bootstrap/base.html" %}
+{% block title %}Blog Lite{% endblock %}
+
+{% block styles %}
+    {{super()}}
+    <link rel="stylesheet" href="{{url_for('static', filename='css/custom.css')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/font-awesome.min.css')}}">
+    
+{% endblock %}
+{% block scripts %}
+    {{ super() }}
+    {{ moment.include_moment(local_js="/static/js/moment-with-locales.min.js") }}
+    <script>
+        window.setTimeout(function() {
+            $(".alert").fadeTo(500, 0).slideUp(500, function(){
+                $(this).remove(); 
+            });
+        }, 2000);
+    </script>
+    {# moment.lang('es') #}
+
+{% endblock %}
+{% block head %}
+    {{ super() }}
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'images/brand.png') }}" type="image/x-icon">
+    <link rel="icon" href="{{ url_for('static', filename = 'images/brand.png') }}" type="image/x-icon">
+
+{% endblock %}
+{% block navbar %}
+<div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">
+                <svg class="d-block" width="36" height="36" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                    <path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path>
+                    <path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path>
+                </svg>
+            </a>
+
+        </div>
+        <div class="navbar-collapse collapse">
+            <ul class="nav navbar-nav">
+                <li class="active">
+                    <a href="/">Home</a>
+                </li>
+                <li >
+                    <a href="{{url_for('main.create_post')}}">New Story</a>
+                </li>
+            </ul>
+           
+            <ul class="nav navbar-nav navbar-right">
+                {% if current_user.is_authenticated %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        <img  src="{{current_user.image_url }}" style="float: left;height: 35px;width: 35px;border-radius:50%;margin-right: 10px;margin-top: -6px;" >
+                        
+                        <span>{{current_user.username}}</span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li> <a href = "{{url_for('main.user', username=current_user.username)}}">Profile</a></li>                 
+                        <li> <a href = "{{url_for('auth.change_password')}}">Change Password</a></li> 
+                        {% if current_user.can(Permission.MODERATE_COMMENTS) %}
+                        <li><a href={{url_for("main.moderate_comments")}}>Moderate Comments</a></li>
+                        {% endif %}         
+                        <li> <a href = "{{url_for('auth.logout')}}"><span class="glyphicon glyphicon-log-out"></span> Sign Out</a>   </li>   
+                                               
+                    </ul>
+                </li>
+                {% else %}
+                    
+                    <li> <a href = "{{url_for('auth.login')}}"><i class="fa fa-sign-in" aria-hidden="true"></i> Sign in</a> </li>
+                    <li> <a href = "{{url_for('auth.register')}}"><i class="fa fa-user-plus" aria-hidden="true"></i> Sign up</a> </li>
+                    
+                {% endif %}
+            </ul>
+        </div>
+    </div>
+</div>
+ 
+{% endblock %}
+
+
+
+{% block content %}   
+    <div class="alert container">    
+            {% for message in get_flashed_messages()%}
+            <div class="alert alert-warning  alert-dismissible" >
+                <button type="button" class="close" data-dimiss="alert"><span aria-hidden="true">&times;</span></button>  
+                {{message}}  
+            </div> 
+            {% endfor%}  
+ 
+    </div>
+    
+    {% block entire_content %}
+    {% endblock %}
+
+    <div class="container">
+        {% block page_content %}{% endblock %}
+    </div>
+
+    {#
+    <footer class="footer">
+            <div class="container">
+                <a  class="navbar-brand" href="/">
+                        <svg class="d-block" width="36" height="36" viewBox="0 0 612 612" xmlns="http://www.w3.org/2000/svg" focusable="false">
+                            <path fill="currentColor" d="M510 8a94.3 94.3 0 0 1 94 94v408a94.3 94.3 0 0 1-94 94H102a94.3 94.3 0 0 1-94-94V102a94.3 94.3 0 0 1 94-94h408m0-8H102C45.9 0 0 45.9 0 102v408c0 56.1 45.9 102 102 102h408c56.1 0 102-45.9 102-102V102C612 45.9 566.1 0 510 0z"></path>
+                            <path fill="currentColor" d="M196.77 471.5V154.43h124.15c54.27 0 91 31.64 91 79.1 0 33-24.17 63.72-54.71 69.21v1.76c43.07 5.49 70.75 35.82 70.75 78 0 55.81-40 89-107.45 89zm39.55-180.4h63.28c46.8 0 72.29-18.68 72.29-53 0-31.42-21.53-48.78-60-48.78h-75.57zm78.22 145.46c47.68 0 72.73-19.34 72.73-56s-25.93-55.37-76.46-55.37h-74.49v111.4z"></path>
+                        </svg>
+                    </a>
+                    © 2018 Copyright: 
+            </div>
+    </footer>
+    #}
+{% endblock %}

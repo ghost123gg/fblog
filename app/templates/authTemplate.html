@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+
+
+{% block entire_content %}
+
+<div class="container main-section">
+    <div class="overlay"></div>
+        
+    <div class="authTemplateForm">
+
+            <div class="col-md-4 col-sm-8 col-xs-12 col-md-offset-4 col-sm-offset-2 authTemplate-main">
+                <div class="row">
+                        
+                    <div class="col-md-12 col-sm-12 col-xs-12 authTemplate-box">
+                        
+                    {% block formContent %}
+                    {% endblock %}
+                    </div>
+                    
+                </div>
+            </div>
+    </div>
+</div>
+
+
+
+{% endblock %}

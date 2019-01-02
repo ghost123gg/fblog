@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros with context %}
+{% block title %}Flasky - Post{% endblock %}
+{% block page_content %}
+
+<div class="post-tabs">
+    <h2 id="comments">Moderate Comemnts</h2>
+        <div class="colorgraph"></div>
+
+</div>
+
+{% set moderate = True %}      
+{% include '_comments.html' %}
+{% if pagination %}
+    <div class="comment-pagination" >
+        {{ macros.pagination_widget(pagination, 'main.moderate_comments') }}
+    </div>
+    <div class="clear" style="clear:both"></div>
+{% endif %}   
+    
+   
+{% endblock %}

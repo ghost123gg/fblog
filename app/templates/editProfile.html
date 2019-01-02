@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block page_content %}
+
+<div class="col-xs-12 col-sm-8 col-md-6 col-sm-offset-2 col-md-offset-3">
+    <form class="form" method="POST" enctype="multipart/form-data">
+        {{ form.hidden_tag() }}  
+        {{ wtf.form_errors(form, hiddens='only') }}        
+        <h2>Edit Your Profile</h2> 
+        <hr class="colorgraph">
+        {% for field in form %}
+            {% if not bootstrap_is_hidden_field(field) %}
+                {% if field.type=="SubmitField" %}
+                    {{ wtf.form_field(form.submit,class="btn btn-success btn-block") }}
+                {% elif field.type=="FileField" %}
+                    <div class="form-group " style="height: 100px">
+                        {{form.photo(style="display: none;")}}
+                        
+                      <div class="profile-box" align="center">  
+                          <img id="userImage" class="image" src="{{image_url }}" >
+                          <span id="userImageMask" class="caption fade-caption"> <h3>Edit</h3>   </span>
+                      </div>
+                    {% for error in field.errors %}
+                         <div align="center"><span style="color: red;">{{ error }}</span></div>
+                    {% endfor %}  
+                  </div>  
+                  {% elif field.type=="BooleanField" %}
+                      <div  class="form-group ">
+                          <div class="checkbox checkbox-primary" >
+                              {{ form.confirmed() }}
+                          <label>
+                              {{ form.confirmed.label.text}}
+                          </label>
+                          </div> 
+                     </div>        
+                    {% for error in field.errors %}
+                         <div ><span style="color: red;">{{ error }}</span></div>
+                    {% endfor %}                       
+                   
+                {% else %}
+                    {{ wtf.form_field(field) }}
+                {% endif %}
+                
+            {% endif %}
+        {% endfor %}
+    </form>   
+</div>
+
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+function readURL(input) {
+
+  if (input.files && input.files[0]) {
+    var reader = new FileReader();
+
+    reader.onload = function(e) {
+      $('#userImage').attr('src', e.target.result);
+    }
+
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+$("#userImageMask").click(function() {
+    $("input[id='photo']").click();
+});
+$("#photo").change(function() {
+  readURL(this);
+});
+</script>
+{% endblock %}

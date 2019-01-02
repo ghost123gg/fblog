@@ -1,0 +1,61 @@
+{% extends "authTemplate.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+
+{% block formContent %}
+
+<form class="form" method="POST">
+    <h2>Sign In</h2>                                     
+    {{ form.hidden_tag() }}  
+    {% if form.email.errors or loginError%}
+        <div class="input-group  required has-error" >
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+            {{ form.email(class="form-control",required='required') }}
+            <span class="glyphicon glyphicon-remove form-control-feedback"></span>
+        </div>
+        {% if loginError %}
+            <div class="form-group has-error">
+                <p class="help-block">{{ loginError }}</p>                                
+            </div>
+        {% endif %}
+        {% for error in form.email.errors %}
+            <div class="form-group has-error">
+                <p class="help-block">{{ error }}</p>                                
+            </div>
+        {% endfor %}
+                                                
+    {% else %}
+    <div class="input-group"  >
+            <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+            {{ form.email(class="form-control",required='required') }}
+    </div>
+    {% endif %}
+    
+    <div class="input-group">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            {{ form.password(class="form-control",required='required') }}
+    </div>
+
+    {#
+    {{ wtf.form_field(form.remember_me) }}
+    #}
+    <div class="form-group" >
+            <div class="checkbox checkbox-primary" style="display: inline;">
+                {{ form.remember_me() }}
+                <label>
+                        {{ form.remember_me.label.text}}
+                </label>
+            </div>
+            <div class="col-xs-6 col-sm-6 col-md-6 text-right" style="float: right;padding:  0;">
+                <div class="form-group">
+                    <a href="{{url_for('auth.forget_password_request')}}" data-toggle="modal" >Forgot Password?</a>
+                </div>
+            </div>
+    </div>
+    
+    {{ wtf.form_field(form.submit,class="btn btn-success btn-block") }}
+</form>
+                
+
+
+{% endblock %}

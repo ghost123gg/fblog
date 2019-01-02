@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% import "_macros.html" as macros with context %}
+{% block head %}
+    {{ super() }}
+    <script src="{{ url_for('static', filename='tinymce/js/tinymce/tinymce.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/tinymce_setup.js') }}"></script>
+
+{% endblock %}
+
+{% block page_content %}
+<div class="page-header">
+    {% if createPostFlag %}
+        <h2>Tell your story</h2>
+    {% else %}
+        <h2>Update your story</h2>
+    {% endif %}
+    
+    <div class="colorgraph"></div>
+</div>
+
+{{ macros.tinyMCEWidget(form) }}
+
+{% endblock%}

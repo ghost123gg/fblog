@@ -1,0 +1,116 @@
+{% import "bootstrap/wtf.html" as wtf %}
+{% macro pagination_widget(pagination, endpoint) %}
+    {% if pagination.total > pagination.per_page %}
+        <ul class="pagination">
+            <li{% if not pagination.has_prev %} class="disabled"{% endif %}>
+                <a href="{% if pagination.has_prev %}{{ url_for(endpoint, page=pagination.prev_num, **kwargs) }}{% else %}#{% endif %}">
+                    &laquo; Prev
+                </a>
+            </li>
+            {% for p in pagination.iter_pages() %}
+                {% if p %}
+                    {% if p == pagination.page %}
+                    <li class="active">
+                        <a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <a href="{{ url_for(endpoint, page = p, **kwargs) }}">{{ p }}</a>
+                    </li>
+                    {% endif %}
+                {% else %}
+                <li class="disabled"><a href="#">&hellip;</a></li>
+                {% endif %}
+            {% endfor %}
+            <li{% if not pagination.has_next %} class="disabled"{% endif %}>
+                <a href="{% if pagination.has_next %}{{ url_for(endpoint, page=pagination.next_num, **kwargs) }}{% else %}#{% endif %}">
+                    Next &raquo;
+                </a>
+            </li>
+        </ul>
+    {% endif %}
+{% endmacro %}
+
+{% macro markdownWidget(form) %}
+<div class="post-container">
+    <div class="post-thumbnail">
+        <a href="{{ url_for('main.user', username=current_user.username) }}">
+            <img class="img-rounded profile-thumbnail" src="{{ current_user.image_url }}">
+        </a>
+    </div>
+    <div class="timeline-comment">
+            <form class="form" method="POST">  
+                {{ form.hidden_tag() }}  
+                <div id="exTab2" >	
+                        <ul class="nav nav-tabs">
+                            <li class="active">
+                                <a  href="#1" data-toggle="tab"><i class="fa fa-pencil-square-o" aria-hidden="true"></i> Edit</a>
+                            </li>
+                            <li>
+                                <a href="#2" data-toggle="tab"><i class="fa fa-eye" aria-hidden="true"></i> Preview</a>
+                            </li>
+                        </ul>
+                            <div class="tab-content ">            
+                                <div class="tab-pane active" id="1">
+                                    <div  class="form-group ">
+                                        {{ form.body(class="form-control",required='required',only_input=True, rows=10) }}
+                                    </div>   
+                                </div>
+                                <div class="tab-pane" id="2">
+                                    <div  class="form-group ">
+                                        {{ form.body(only_preview=True) }}
+                                    </div>   
+                                </div>
+                                <div class="comment-markdown">
+                                        <a class="tabnav-extra" href="https://guides.github.com/features/mastering-markdown/" target="_blank" data-ga-click="Markdown Toolbar, click, help">
+                                        <svg aria-hidden="true" class="octicon octicon-markdown v-align-bottom" height="16" version="1.1" viewBox="0 0 16 16" width="16"><path fill-rule="evenodd" d="M14.85 3H1.15C.52 3 0 3.52 0 4.15v7.69C0 12.48.52 13 1.15 13h13.69c.64 0 1.15-.52 1.15-1.15v-7.7C16 3.52 15.48 3 14.85 3zM9 11H7V8L5.5 9.92 4 8v3H2V5h2l1.5 2L7 5h2v6zm2.99.5L9.5 8H11V5h2v3h1.5l-2.51 3.5z"></path></svg>
+                                        Styling with Markdown is supported
+                                        </a>
+                                </div>
+                                <div  class="comment-submit">
+                                        {{ wtf.form_field(form.submit,class="btn btn-success btn-block",id="comment_submit")}}
+                                        <div style="clear:both"></div>
+                                </div>
+                            </div>
+                </div>
+            </form>
+    </div>
+</div>
+        
+
+        
+{% endmacro %}
+
+
+{% macro tinyMCEWidget(form) %}
+
+
+<div class="post-container">
+    <div class="post-thumbnail">
+        <a href="{{ url_for('main.user', username=current_user.username) }}">
+            <img class="img-rounded profile-thumbnail" src="{{ current_user.image_url }}">
+        </a>
+    </div>
+    <div class="timeline-comment">
+            <form class="form" method="POST">  
+                {{ form.hidden_tag() }} 
+                 
+                <div class="discussion-topic-header">
+                        {{ form.title(class="form-control input-block input-contrast",required='required',placeholder="Title",only_input=True) }}
+                </div>
+                <div class="post-richContextcontainer" name="content">
+                        {{form.body(id="postContent",class="post-editor",style="visibility: hidden;")}}
+                </div>
+                <div  class="post-submit">
+                    {{ wtf.form_field(form.submit,class="btn btn-success btn-block",id="post_submit")}}
+                    <div style="clear:both"></div>
+                </div>    
+              
+     
+            </form>
+    </div>
+</div>
+
+
+{% endmacro %}
+

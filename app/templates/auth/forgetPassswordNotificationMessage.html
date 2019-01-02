@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block entire_content %}
+        <div class="container">
+                        
+                <div class="alert alert-success">
+                        <i class="fa fa-envelope" aria-hidden="true"   style="float: left;margin-right: 20px;margin-top: 3px;"></i>                        
+                        <p>We have sent an email to your account  <a href="mailto:{{email}}">{{email}}</a>  if you have signed up with this email address. Please check your mailbox.</p>
+
+                </div>
+        </div>
+
+<div class="container main-section">
+        <div class="overlay"></div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% import "_macros.html" as macros with context %}
+{% block title %}Flasky - Post{% endblock %}
+{% block page_content %}
+
+    {% include '_posts.html' %}
+    <div class="post-tabs">
+        <h3 id="comments">{{pagination.total}} Comemnts</h3>
+    </div>
+ 
+        
+    {% if pagination %}
+         {% include '_comments.html' %}
+        <div class="comment-pagination" >
+            {{ macros.pagination_widget(pagination, 'main.post',id=posts[0].id) }}
+        </div>
+        <div class="clear" style="clear:both"></div>
+    {% endif %}   
+    
+    {% if current_user.can(Permission.COMMENT) %}
+        {{ macros.markdownWidget(form) }}
+    {% else %}
+    <div class="discussion-timeline-actions">
+        <div class="flash flash-warn mt-3">
+            <a href="{{url_for('auth.register')}}" class="btn btn-success">Sign up for free</a>
+            <strong>to comment</strong>.
+            Already have an account?
+            <a href="{{url_for('auth.login')}}" >Sign in to comment.</a> Already login? <a href="{{url_for('main.user',username='Administrator')}}" >Please contact Administrator</a>
+        </div>
+    </div>
+    {% endif %}  
+{% endblock %}
+
+{% block scripts %}
+    {{ super() }}
+    <script type="text/javascript" src="/static/js/Markdown.Converter.min.js"></script> 
+    <script type="text/javascript" src="/static/js/Markdown.Sanitizer.min.js"></script> 
+    
+    <!--
+
+    <script type="text/javascript">
+        window.onload = function () {
+            document.getElementsByClassName("post-body")[0].style.maxHeight = "none";
+           
+            //$(".post-body").css("max-height","none");
+        };
+    -->
+    </script>
+{% endblock %}

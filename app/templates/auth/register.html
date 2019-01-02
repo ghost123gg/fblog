@@ -1,0 +1,49 @@
+{% extends "authTemplate.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block formContent %}
+    <form class="form" method="POST">
+        {{ form.hidden_tag() }}  
+        {{ wtf.form_errors(form, hiddens='only') }}        
+        <h2>Sign Up</h2>                                     
+        <div class="input-group {% if form.email.errors %} has-error {% endif %}"  >
+                <span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>
+                
+                {{ form.email(class="form-control",required='required',placeholder="Email") }}
+                
+                {% if form.email.errors %}<span class="glyphicon glyphicon-remove form-control-feedback"></span>{% endif %}
+        </div>
+        {% for message in form.email.errors %}
+            <p class="help-block">{{ message }}</p>                                
+        {% endfor %}
+     
+     
+        <div class="input-group {% if form.username.errors %} has-error {% endif %}">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
+                {{ form.username(class="form-control",required='required',placeholder="Username") }}
+                {% if form.username.errors %}<span class="glyphicon glyphicon-remove form-control-feedback"></span>{% endif %}                
+        </div>
+        {% for message in form.username.errors %}
+            <p class="help-block">{{ message }}</p>                                
+        {% endfor %}
+
+        <div class="input-group {% if form.password.errors %} has-error {% endif %}">
+                <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+                {{ form.password(class="form-control",required='required',placeholder="Password") }}
+                {% if form.password.errors %}<span class="glyphicon glyphicon-remove form-control-feedback"></span>{% endif %}                            
+       </div>
+       {% for message in form.password.errors %}
+            <p class="help-block">{{ message }}</p>                                
+        {% endfor %}
+
+       <div class="input-group {% if form.password2.errors %} has-error {% endif %}">
+            <span class="input-group-addon"><i class="glyphicon glyphicon-lock"></i></span>
+            {{ form.password2(class="form-control",required='required', placeholder="Confirm Password")}}
+            {% if form.password2.errors %}<span class="glyphicon glyphicon-remove form-control-feedback"></span>{% endif %}                            
+        </div> 
+        {% for message in form.password2.errors %}
+            <p class="help-block">{{ message }}</p>                                
+        {% endfor %}
+
+        {{ wtf.form_field(form.submit,class="btn btn-success btn-block") }}
+    </form>
+{% endblock %}

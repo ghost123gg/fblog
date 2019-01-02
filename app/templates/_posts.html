@@ -1,0 +1,47 @@
+ <ul class="posts">
+        {% for post in posts %}
+        <li {% if show_more != False %} class="post" {% else %} class="single post" {% endif %}>
+            <h3 class="post-title"><a href="{{ url_for('main.post', id=post.id)}}" class="post-link">{{post.title}}</a></h3>    
+            <div class="post-thumbnail">
+                <a href="{{ url_for('main.user', username=post.author.username) }}">
+                    <img class="img-rounded profile-thumbnail" src="{{ post.author.image_url }}">
+                </a>
+            </div>
+            <div class="post-content">
+                <div class="post-author"><strong><a class="userLink" href="{{ url_for('main.user', username=post.author.username) }}">{{ post.author.username }}</a></strong>&nbsp;&nbsp;&nbsp;<strong style="color:#999">·</strong>&nbsp;</div>
+                <div class="post-date"><strong> {{ moment(post.timestamp).format('LL') }}</strong> </div>
+                <div {% if show_more != False %} class="post-body" {% else %} class="single post-body" {% endif %} >
+
+                {% if show_more != False %}
+                    {{ post.body | safe | striptags|truncate(length=500, killwords=False, end="......") }}
+                {% else %}
+                    {{ post.body | safe }}
+                {% endif %}
+
+                </div>
+                <div class="post-footer">
+                    {% if show_more != False %}
+                        <a class="read-more" href="{{ url_for('main.post', id=post.id)}}">
+                            Read More →
+                        </a>
+                    {% endif %}
+                    <div class="post-footer-right">
+                        {% if current_user == post.author %}
+                            <a class="post-edit" href="{{ url_for('main.edit_post', id=post.id) }}">
+                                <span class="label label-primary">Edit</span>
+                            </a>
+                        {% elif current_user.is_administrator()%}
+                            <a class="post-edit admin" href="{{ url_for('main.edit_post', id=post.id) }}">
+                                <span class="label label-danger">Edit [Admin]</span>
+                            </a>
+                        {% endif %}
+
+                        <a class="post-comment" href ="{{ url_for('main.post', id=post.id)}}#comments">
+                            <span class="label label-primary">{{post.comments.filter_by(disable=False).count()}} comments</span>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </li>
+        {% endfor %}
+</ul>

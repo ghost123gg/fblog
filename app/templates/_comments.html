@@ -1,0 +1,39 @@
+ <ul class="comments">
+        {% for comment in comments %}
+            {% if not comment.disable or moderate %}
+                <li class="comment">
+                    <div class="comment-thumbnail">
+                        <a href="{{ url_for('main.user', username=comment.author.username) }}">
+                            <img class="comment img-rounded" src="{{ comment.author.image_url }}">
+                        </a>
+                    </div>
+                    <div class="comment panel panel-default">
+                        <div class="panel-heading">
+                            <strong>
+                                <a class="userLink" href="{{ url_for('main.user', username=comment.author.username) }}">{{ comment.author.username }}</a>
+                            </strong>
+                            <span>commented</span>
+                            {{ moment(comment.timestamp).fromNow() }}
+                            {% if moderate %}
+                            <div class="comment-footer">
+                                {% if comment.disable!=True %}
+                                   <a class="btn btn-danger" href='{{url_for("main.disable_comment",id=comment.id, page=pagination.page)}}'>Disable</a>
+                                {% else %}
+                                    <a class="btn btn-primary" href='{{url_for("main.enable_comment",id=comment.id,page=pagination.page)}}'>Enable</a>
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                        </div>
+                        <div class="panel-body">
+                            {% if comment.body_html %}
+                                {{ comment.body_html | safe }}
+                            {% else %}
+                                {{ comment.body }}
+                            {% endif %}
+                        </div>
+                      
+                    </div>
+                </li>
+            {% endif %}
+        {% endfor %}
+</ul>
